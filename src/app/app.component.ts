@@ -1,6 +1,9 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
+import { normalizeCommonJSImport } from '../utils/normalizeCommonJSImport';
 
-import * as Chart from 'chart.js';
+const importChart = normalizeCommonJSImport(
+  import(/* webpackChunkName: "chart" */ 'chart.js'),
+);
 
 @Component({
   selector: 'app-root',
@@ -14,7 +17,9 @@ import * as Chart from 'chart.js';
 export class AppComponent {
   @ViewChild('chart') chartElement: ElementRef<HTMLCanvasElement>;
 
-  ngOnInit() {
+  async ngOnInit() {
+    const Chart = await importChart;
+
     new Chart(this.chartElement.nativeElement, {
       // The type of chart we want to create
       type: 'line',
